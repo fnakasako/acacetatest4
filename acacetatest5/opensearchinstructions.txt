@@ -1,0 +1,39 @@
+run
+
+1. Create Docker network
+
+docker network create opensearch-net
+
+2. Run opensearch on network
+
+docker run -d --name opensearch --network opensearch-net -p 9200:9200 -p 9600:9600 \
+  -e "discovery.type=single-node" \
+  -e "plugins.security.ssl.http.enabled=false" \
+  -e "plugins.security.disabled=true" \
+  -e "bootstrap.memory_lock=true" \
+  -e "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" \
+  -e OPENSEARCH_INITIAL_ADMIN_PASSWORD='z#]6]^a\!w:mvEyXE-??n' \
+  opensearchproject/opensearch:latest
+
+3. Run Opensearch dashboards on network
+
+
+docker run -d --name opensearch-dashboards --network opensearch-net -p 5601:5601 \
+  -e "OPENSEARCH_HOSTS=http://opensearch-node1:9200" \
+  -e "opensearch_dashboards.plugins.security.disabled=true" \
+  opensearchproject/opensearch-dashboards:latest
+
+
+
+####
+
+Create new password for opensearch dashboards
+
+1. navigate to opensearch directory
+
+2. run 
+
+chmod /plugins/opensearch-security/tools/hash.sh - p <new password>
+
+
+
